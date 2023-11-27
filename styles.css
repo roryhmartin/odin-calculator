@@ -2,6 +2,13 @@ body {
     font-family: Helvetica, Arial, sans-serif;
 }
 
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
 #calculator {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -31,6 +38,10 @@ button:hover {
     background-color: #555;
 }
 
+button:active {
+    background-color: #dcdcdc;
+}
+
 #display {
     grid-column: span 4;
     padding: 10px;
@@ -50,9 +61,13 @@ button:hover {
 
 .operator {
     background-color: #f1a43c;
-    transition: 0.2s ease-in;
+    transition: 0.1s ease-in;
 }
 
 .operator:hover {
     background-color: #c28632;
+}
+
+.operator:active {
+    background-color: #f8b359;
 }

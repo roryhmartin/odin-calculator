@@ -3,6 +3,31 @@
 let firstNumber;
 let operator;
 let secondNumber;
+let displayValue = '';
+const displayNumber = document.getElementById('display');
+const buttons = document.getElementsByTagName('button');
+const buttonsArray = [...buttons];
+
+function updateDisplay(buttonValue) {
+    if (buttonValue === 'clear') {
+        displayValue = '0';
+    } else {
+        displayValue = buttonValue;
+    }
+    displayNumber.textContent = displayValue;
+}
+
+buttonsArray.forEach((button) => {
+    button.addEventListener('click', () => {
+        const buttonValue = button.value;
+
+        if (!isNaN(buttonValue) || buttonValue === '.') {
+            updateDisplay(buttonValue);
+        } else if (buttonValue === 'clear') {
+            updateDisplay(buttonValue);
+        }
+    });
+});
 
 function add(a, b) {
     return a + b;
@@ -36,4 +61,4 @@ function operate(firstNumber, secondNumber, operator) {
     }
 }
 
-console.log(operate(2, 5, '*'));
+console.log('here!!!');

@@ -9,28 +9,38 @@ body {
     margin: 0 auto;
     background-color: #535353;
     color: white;
+    border-radius: 5%;
+    overflow: hidden;
+    gap: 1px;
+    box-shadow: -10px 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 button {
     grid-column: span 1;
     padding: 10px;
-    font-size: 18px;
+    font-size: 1.5rem;
     border: 1px solid #ccc;
     text-align: center;
     background-color: #7e7e7e;
     color: white;
-    border: 1px solid #535353;
+    border: none;
+    transition: 0.1s ease-in;
+}
+
+button:hover {
+    background-color: #555;
 }
 
 #display {
     grid-column: span 4;
     padding: 10px;
-    font-size: 24px;
+    font-size: 3rem;
     text-align: right;
     border: 1px solid #ccc;
     box-sizing: border-box;
     background-color: #535353;
     border: 1px solid #535353;
+    font-weight: 400;
 }
 
 #zeroBtn {
@@ -39,5 +49,10 @@ button {
 }
 
 .operator {
-    background-color: #f2a43c;
+    background-color: #f1a43c;
+    transition: 0.2s ease-in;
+}
+
+.operator:hover {
+    background-color: #c28632;
 }

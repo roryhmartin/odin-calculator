@@ -11,8 +11,10 @@ const buttonsArray = [...buttons];
 function updateDisplay(buttonValue) {
     if (buttonValue === 'clear') {
         displayValue = '0';
-    } else {
+    } else if (displayValue === '0') {
         displayValue = buttonValue;
+    } else {
+        displayValue += buttonValue;
     }
     displayNumber.textContent = displayValue;
 }

@@ -8,28 +8,40 @@ const displayNumber = document.getElementById('display');
 const buttons = document.getElementsByTagName('button');
 const buttonsArray = [...buttons];
 
-function updateDisplay(buttonValue) {
+function updateDisplay(button) {
+    const buttonValue = button.value;
+
     if (buttonValue === 'clear') {
-        displayValue = '0';
-    } else if (displayValue === '0') {
-        displayValue = buttonValue;
+        clearDisplay();
+    } else if (buttonValue === '.' && displayValue.includes('.')) {
+        return;
+    } else if (button.classList.contains('operator')) {
+        if (firstNumber === undefined) {
+            firstNumber = parseFloat(displayValue);
+        }
+        operator = buttonValue;
+        console.log(`First Number is ${firstNumber}`);
+        displayValue = operator;
     } else {
         displayValue += buttonValue;
     }
     displayNumber.textContent = displayValue;
+    console.log(displayValue);
 }
 
 buttonsArray.forEach((button) => {
-    button.addEventListener('click', () => {
-        const buttonValue = button.value;
-
-        if (!isNaN(buttonValue) || buttonValue === '.') {
-            updateDisplay(buttonValue);
-        } else if (buttonValue === 'clear') {
-            updateDisplay(buttonValue);
-        }
+    button.addEventListener('click', (event) => {
+        event.preventDefault();
+        updateDisplay(button);
     });
 });
+
+function clearDisplay() {
+    displayValue = '';
+    firstNumber = undefined;
+    secondNumber = undefined;
+    operator = undefined;
+}
 
 function add(a, b) {
     return a + b;
@@ -62,5 +74,4 @@ function operate(firstNumber, secondNumber, operator) {
             break;
     }
 }
-
-console.log('here!!!');
+clearDisplay();

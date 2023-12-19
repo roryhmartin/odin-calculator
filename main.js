@@ -1,9 +1,11 @@
 // quokka: Cmd/Ctrl + K, Q
 
-let firstNumber;
-let operator;
-let secondNumber;
-let displayValue = '';
+let calculatorState = {
+    firstNumber: undefined,
+    operator: undefined,
+    secondNumber: undefined,
+    displayValue: '',
+};
 const displayNumber = document.getElementById('display');
 const buttons = document.getElementsByTagName('button');
 const buttonsArray = [...buttons];
@@ -13,20 +15,39 @@ function updateDisplay(button) {
 
     if (buttonValue === 'clear') {
         clearDisplay();
-    } else if (buttonValue === '.' && displayValue.includes('.')) {
+    } else if (buttonValue === '.' && calculatorState.displayValue.includes('.')) {
         return;
     } else if (button.classList.contains('operator')) {
-        if (firstNumber === undefined) {
-            firstNumber = parseFloat(displayValue);
-        }
-        operator = buttonValue;
-        console.log(`First Number is ${firstNumber}`);
-        displayValue = operator;
+        handleOperatorClick(buttonValue);
+    } else if (buttonValue === '=') {
+        handleEqualClick();
     } else {
-        displayValue += buttonValue;
+        calculatorState.displayValue += buttonValue;
     }
-    displayNumber.textContent = displayValue;
-    console.log(displayValue);
+    displayNumber.textContent = calculatorState.displayValue;
+    console.log(calculatorState.displayValue);
+}
+
+function handleOperatorClick(operator) {
+    if (calculatorState.firstNumber === undefined) {
+        calculatorState.firstNumber = parseFloat(calculatorState.displayValue);
+        // console.log(`First Number: ${calculatorState.firstNumber}`);
+        // console.log(`operator: ${operator}`);
+    }
+    calculatorState.operator = operator;
+    calculatorState.displayValue = '';
+}
+
+function handleEqualClick() {
+    if (calculatorState.firstNumber !== undefined && calculatorState.operator !== undefined && calculatorState.displayValue !== '') {
+        calculatorState.secondNumber = parseFloat(calculatorState.displayValue);
+        console.log(`secondNumber : ${calculatorState.secondNumber}`);
+        const result = operate(calculatorState.firstNumber, calculatorState.secondNumber, calculatorState.operator);
+        calculatorState.displayValue = result.toString();
+        calculatorState.firstNumber = result;
+        calculatorState.operator = undefined;
+        calculatorState.secondNumber = undefined;
+    }
 }
 
 buttonsArray.forEach((button) => {
@@ -37,10 +58,12 @@ buttonsArray.forEach((button) => {
 });
 
 function clearDisplay() {
-    displayValue = '';
-    firstNumber = undefined;
-    secondNumber = undefined;
-    operator = undefined;
+    calculatorState = {
+        firstNumber: undefined,
+        operator: undefined,
+        secondNumber: undefined,
+        displayValue: '',
+    };
 }
 
 function add(a, b) {
@@ -70,8 +93,7 @@ function operate(firstNumber, secondNumber, operator) {
         case '/':
             return divide(firstNumber, secondNumber);
         default:
-            'Invalid Number';
+            return 'Invalid Number';
             break;
     }
 }
-clearDisplay();

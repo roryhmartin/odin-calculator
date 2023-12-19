@@ -5,6 +5,8 @@ let calculatorState = {
     operator: undefined,
     secondNumber: undefined,
     displayValue: '',
+    result: null,
+    isResultDisplayed: false,
 };
 const displayNumber = document.getElementById('display');
 const buttons = document.getElementsByTagName('button');
@@ -22,7 +24,12 @@ function updateDisplay(button) {
     } else if (buttonValue === '=') {
         handleEqualClick();
     } else {
-        calculatorState.displayValue += buttonValue;
+        if (calculatorState.isResultDisplayed) {
+            calculatorState.displayValue = buttonValue;
+            calculatorState.isResultDisplayed = false;
+        } else {
+            calculatorState.displayValue += buttonValue;
+        }
     }
     displayNumber.textContent = calculatorState.displayValue;
     console.log(calculatorState.displayValue);
@@ -31,21 +38,26 @@ function updateDisplay(button) {
 function handleOperatorClick(operator) {
     if (calculatorState.firstNumber === undefined) {
         calculatorState.firstNumber = parseFloat(calculatorState.displayValue);
-        // console.log(`First Number: ${calculatorState.firstNumber}`);
-        // console.log(`operator: ${operator}`);
+        calculatorState.displayValue = '';
+    } else if (calculatorState.operator !== undefined && calculatorState.displayValue !== '') {
+        calculatorState.secondNumber = parseFloat(calculatorState.displayValue);
+        const result = operate(calculatorState.firstNumber, calculatorState.secondNumber, calculatorState.operator);
+        calculatorState.displayValue = result.toString();
+        calculatorState.firstNumber = result;
+        calculatorState.secondNumber = undefined;
+        calculatorState.isResultDisplayed = true;
     }
+
     calculatorState.operator = operator;
-    calculatorState.displayValue = '';
+    console.log('Updated state:', calculatorState);
 }
 
 function handleEqualClick() {
     if (calculatorState.firstNumber !== undefined && calculatorState.operator !== undefined && calculatorState.displayValue !== '') {
         calculatorState.secondNumber = parseFloat(calculatorState.displayValue);
-        console.log(`secondNumber : ${calculatorState.secondNumber}`);
         const result = operate(calculatorState.firstNumber, calculatorState.secondNumber, calculatorState.operator);
         calculatorState.displayValue = result.toString();
         calculatorState.firstNumber = result;
-        calculatorState.operator = undefined;
         calculatorState.secondNumber = undefined;
     }
 }

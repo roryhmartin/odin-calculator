@@ -60,15 +60,19 @@ button:active {
     grid-column-end: 3;
 }
 
-.operator {
+.operator,
+.equals {
     background-color: #f1a43c;
     transition: 0.1s ease-in;
 }
 
-.operator:hover {
+.operator:hover,
+.equals:hover {
     background-color: #c28632;
 }
 
-.operator:active {
+.operator:active,
+.operator,
+.equals:active {
     background-color: #f8b359;
 }

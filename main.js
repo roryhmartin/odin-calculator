@@ -9,6 +9,7 @@ let calculatorState = {
 const displayNumber = document.getElementById('display');
 const buttons = document.getElementsByTagName('button');
 const buttonsArray = [...buttons];
+const calculationText = document.getElementById('calculation-text');
 
 function updateDisplay(button) {
     const buttonValue = button.value;
@@ -27,6 +28,11 @@ function updateDisplay(button) {
             calculatorState.isResultDisplayed = false;
         } else {
             calculatorState.displayValue += buttonValue;
+        }
+        if (calculatorState.operator) {
+            calculationText.textContent = `${calculatorState.firstNumber} ${calculatorState.operator} ${calculatorState.displayValue}`;
+        } else {
+            calculationText.textContent = calculatorState.displayValue;
         }
     }
 
@@ -79,6 +85,7 @@ function clearDisplay() {
         displayValue: '',
         isResultDisplayed: false,
     };
+    calculationText.textContent = '';
 }
 
 function add(a, b) {

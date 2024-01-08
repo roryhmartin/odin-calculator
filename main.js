@@ -25,6 +25,13 @@ function updateDisplay(button) {
         console.log(calculatorState.displayValue);
     }
 
+    if(buttonType === 'decimal') {
+        if(!calculatorState.displayValue.includes('.')) {
+            calculatorState.displayValue += '.';
+            displayNumber.innerText = calculatorState.displayValue;
+        }
+    }
+
     if (buttonType === 'operator' && calculatorState.firstNumber.length === 0) { //store the first number when operator is pressed
         calculatorState.firstNumber = parseFloat(calculatorState.displayValue);
         calculatorState.operator = button.value;
@@ -78,6 +85,8 @@ function getButtonType(buttonValue) {
         return 'equals';
     } else if (buttonValue === 'clear') {
         return 'clear';
+    } else if (buttonValue === '.') {
+        return 'decimal';
     } else {
         return 'other'; // replace
     }

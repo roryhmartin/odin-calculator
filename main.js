@@ -1,7 +1,7 @@
 let calculatorState = {
-    firstNumber: undefined,
+    firstNumber: [],
     operator: undefined,
-    secondNumber: undefined,
+    secondNumber: [],
     displayValue: '',
     isResultDisplayed: false,
 };
@@ -12,62 +12,54 @@ const buttonsArray = [...buttons];
 const calculationText = document.getElementById('calculation-text');
 
 function updateDisplay(button) {
-    const buttonValue = button.value;
+    const buttonType = getButtonType(button.value);
 
-    if (buttonValue === 'clear') {
+    if (buttonType == 'clear') {
         clearDisplay();
-    } else if (buttonValue === '.' && calculatorState.displayValue.includes('.')) {
         return;
-    } else if (button.classList.contains('operator')) {
-        handleOperatorClick(buttonValue);
-    } else if (buttonValue === '=') {
-        handleEqualClick();
-    } else {
-        if (calculatorState.isResultDisplayed) {
-            calculatorState.displayValue = buttonValue;
-            calculatorState.isResultDisplayed = false;
-        } else {
-            calculatorState.displayValue += buttonValue;
-        }
-        if (calculatorState.operator) {
-            calculationText.textContent = `${calculatorState.firstNumber} ${calculatorState.operator} ${calculatorState.displayValue}`;
-        } else {
-            calculationText.textContent = calculatorState.displayValue;
-        }
     }
 
-    displayNumber.textContent = calculatorState.displayValue;
-    console.log(calculatorState.displayValue);
-}
+    if (buttonType === 'number') {
+        calculatorState.displayValue += parseFloat(button.value);
+        displayNumber.innerText = calculatorState.displayValue;
+        console.log(calculatorState.displayValue);
+    }
 
-function handleOperatorClick(operator) {
-    if (calculatorState.firstNumber === undefined) {
+    if (buttonType === 'operator' && calculatorState.firstNumber.length === 0) { //store the first number when operator is pressed
         calculatorState.firstNumber = parseFloat(calculatorState.displayValue);
+        calculatorState.operator = button.value;
         calculatorState.displayValue = '';
-    } else if (calculatorState.operator !== undefined && calculatorState.displayValue !== '') {
-        calculatorState.secondNumber = parseFloat(calculatorState.displayValue);
-        calculateAndDisplayResult();
-        calculatorState.isResultDisplayed = true;
+        console.log(`First Number: ${calculatorState.firstNumber}`);
+        console.log(`operator: ${calculatorState.operator}`);
     }
 
-    calculatorState.operator = operator;
-    console.log('Updated state:', calculatorState);
-}
-
-function handleEqualClick() {
-    if (calculatorState.firstNumber !== undefined && calculatorState.operator !== undefined && calculatorState.displayValue !== '') {
+    if (buttonType === 'number' && calculatorState.firstNumber.length != 0 && calculatorState.operator != undefined) { //store the second number
         calculatorState.secondNumber = parseFloat(calculatorState.displayValue);
-        calculateAndDisplayResult();
-        calculatorState.operator = undefined;
-        calculatorState.isResultDisplayed = true;
+        console.log(`second Number: ${calculatorState.secondNumber}`);
     }
-}
 
-function calculateAndDisplayResult() {
-    const result = operate(calculatorState.firstNumber, calculatorState.secondNumber, calculatorState.operator);
-    calculatorState.displayValue = result.toString();
-    calculatorState.firstNumber = result;
-    calculatorState.secondNumber = undefined;
+    if (buttonType === 'operator' && calculatorState.firstNumber.length != 0) {
+        calculatorState.operator = button.value;
+        calculatorState.displayValue = '';
+    }
+
+    if ((buttonType === 'operator' || buttonType === 'equals') && calculatorState.firstNumber.length != 0 && calculatorState.secondNumber.length != 0) { //operate
+        calculatorState.firstNumber = operate(calculatorState.firstNumber, calculatorState.secondNumber, calculatorState.operator);
+        calculatorState.displayValue = calculatorState.firstNumber;
+        
+        if(buttonType === 'equals') {
+            calculatorState.operator = undefined;
+           
+        } else {
+            calculatorState.operator = button.value;
+        }
+
+        displayNumber.innerText = calculatorState.displayValue;
+        calculatorState.secondNumber = [];
+        calculatorState.displayValue = '';
+        console.log(`result is ${calculatorState.firstNumber}`);
+        console.log(calculatorState);
+    }
 }
 
 buttonsArray.forEach((button) => {
@@ -77,14 +69,28 @@ buttonsArray.forEach((button) => {
     });
 });
 
+function getButtonType(buttonValue) {
+    if (/[0-9]/.test(buttonValue)) {
+        return 'number';
+    } else if (['+', '-', '*', '/'].includes(buttonValue)) {
+        return 'operator';
+    } else if (['='].includes(buttonValue)) {
+        return 'equals';
+    } else if (buttonValue === 'clear') {
+        return 'clear';
+    } else {
+        return 'other'; // replace
+    }
+}
 function clearDisplay() {
     calculatorState = {
-        firstNumber: undefined,
+        firstNumber: [],
         operator: undefined,
-        secondNumber: undefined,
+        secondNumber: [],
         displayValue: '',
         isResultDisplayed: false,
     };
+    displayNumber.innerText = '0';
     calculationText.textContent = '';
 }
 

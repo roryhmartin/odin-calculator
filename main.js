@@ -136,3 +136,42 @@ function operate(firstNumber, secondNumber, operator) {
             return 'Invalid Number';
     }
 }
+
+document.addEventListener('keydown', (event) => {
+    const key = event.key;
+
+    
+    const buttonValue = mapKeyboardKeyToButtonValue(key);
+
+    if (buttonValue) {
+       
+        const mockButton = { value: buttonValue };
+        updateDisplay(mockButton);
+    }
+});
+
+function mapKeyboardKeyToButtonValue(key) {
+    switch (key) {
+        case 'Enter':
+            return '=';
+        case 'Escape':
+            return 'clear';
+        case '+':
+        case '-':
+        case '*':
+        case '/':
+            return key;
+        case '.':
+            return 'decimal';
+        case 'Enter':
+            return '=';
+        default:
+            return /[0-9]/.test(key) ? key : null;
+    }
+}
+
+
+document.addEventListener('keydown', function (event) {
+    console.log('Pressed key:', event.key);
+});
+

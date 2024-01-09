@@ -32,7 +32,8 @@ function updateDisplay(button) {
         }
     }
 
-    if (buttonType === 'operator' && calculatorState.firstNumber.length === 0) { //store the first number when operator is pressed
+    //store the first number when operator is pressed
+    if (buttonType === 'operator' && calculatorState.firstNumber.length === 0) {
         calculatorState.firstNumber = parseFloat(calculatorState.displayValue);
         calculatorState.operator = button.value;
         calculatorState.displayValue = '';
@@ -41,7 +42,8 @@ function updateDisplay(button) {
         console.log(`operator: ${calculatorState.operator}`);
     }
 
-    if (buttonType === 'number' && calculatorState.firstNumber.length != 0 && calculatorState.operator != undefined) { //store the second number
+    //store the second number
+    if (buttonType === 'number' && calculatorState.firstNumber.length != 0 && calculatorState.operator != undefined) {
         calculatorState.secondNumber = parseFloat(calculatorState.displayValue);
         calculationText.textContent = `${calculatorState.firstNumber} ${calculatorState.operator} ${calculatorState.secondNumber}`;
         console.log(`second Number: ${calculatorState.secondNumber}`);
@@ -53,7 +55,8 @@ function updateDisplay(button) {
         calculationText.textContent = `${calculatorState.firstNumber} ${calculatorState.operator}`;
     }
 
-    if ((buttonType === 'operator' || buttonType === 'equals') && calculatorState.firstNumber.length != 0 && calculatorState.secondNumber.length != 0) { //operate
+    //operate
+    if ((buttonType === 'operator' || buttonType === 'equals') && calculatorState.firstNumber.length != 0 && calculatorState.secondNumber.length != 0) { 
         calculatorState.firstNumber = operate(calculatorState.firstNumber, calculatorState.secondNumber, calculatorState.operator);
         calculatorState.displayValue = calculatorState.firstNumber;
         
@@ -68,7 +71,6 @@ function updateDisplay(button) {
         displayNumber.innerText = calculatorState.displayValue;
         calculatorState.secondNumber = [];
         calculatorState.displayValue = '';
-        // calculationText.textContent = `${calculatorState.firstNumber} ${calculatorState.operator}`;
         console.log(`result is ${calculatorState.firstNumber}`);
         console.log(calculatorState);
     }
@@ -78,6 +80,19 @@ function updateDisplay(button) {
         displayNumber.innerText = calculatorState.displayValue;
         console.log("yolodelete");
     }   
+
+    if (buttonType === 'percentage') {
+        if (calculatorState.secondNumber.length > 0) {
+            calculatorState.secondNumber = operate(calculatorState.firstNumber, calculatorState.secondNumber, calculatorState.operator);
+        } else {
+            calculatorState.firstNumber = parseFloat(calculatorState.displayValue);
+            calculatorState.operator = button.value;
+            calculatorState.displayValue = operate(calculatorState.firstNumber, 0, calculatorState.operator);
+        }
+      
+        displayNumber.innerText = calculatorState.displayValue;
+      }
+    
 }
 
 buttonsArray.forEach((button) => {
@@ -100,6 +115,8 @@ function getButtonType(buttonValue) {
         return 'decimal';
     } else if (buttonValue === 'delete') {
         return 'delete';
+    } else if (buttonValue === '%'){
+        return 'percentage';
     } else {
         return 'other'; // replace
     }
@@ -117,22 +134,26 @@ function clearDisplay() {
 }
 
 function add(a, b) {
-    return a + b;
+    let addSum = a + b;
+    return addSum.toFixed(2);
 }
 
 function subtract(a, b) {
-    return a - b;
+    let minusSum = a - b;
+    return minusSum.toFixed(2);
 }
 
 function multiply(a, b) {
-    return a * b;
+    let multiplySum = a * b;
+    return multiplySum.toFixed(2);
 }
 
 function divide(a, b) {
     if (b === 0) {
         return 'Cannot divide by zero';
     }
-    return a / b;
+    let divideSum = a / b;
+    return divideSum.toFixed(2);
 }
 
 function operate(firstNumber, secondNumber, operator) {
@@ -145,6 +166,8 @@ function operate(firstNumber, secondNumber, operator) {
             return multiply(firstNumber, secondNumber);
         case '/':
             return divide(firstNumber, secondNumber);
+        case '%':
+            return secondNumber ? firstNumber * (secondNumber / 100) : firstNumber / 100;
         default:
             return 'Invalid Number';
     }
@@ -152,12 +175,9 @@ function operate(firstNumber, secondNumber, operator) {
 
 document.addEventListener('keydown', (event) => {
     const key = event.key;
-
-    
     const buttonValue = mapKeyboardKeyToButtonValue(key);
 
     if (buttonValue) {
-       
         const mockButton = { value: buttonValue };
         updateDisplay(mockButton);
     }
@@ -178,6 +198,8 @@ function mapKeyboardKeyToButtonValue(key) {
             return '.';
         case 'Backspace':
             return 'delete';
+        case '%':
+            return '%';
         default:
             return /[0-9]/.test(key) ? key : null;
     }

@@ -78,7 +78,6 @@ function updateDisplay(button) {
     if (buttonType === 'delete') {
         calculatorState.displayValue = calculatorState.displayValue.slice(0, -1);
         displayNumber.innerText = calculatorState.displayValue;
-        console.log("yolodelete");
     }   
 
     if (buttonType === 'percentage') {
@@ -135,17 +134,17 @@ function clearDisplay() {
 
 function add(a, b) {
     let addSum = a + b;
-    return addSum.toFixed(2);
+    return formatResult(addSum);
 }
 
 function subtract(a, b) {
     let minusSum = a - b;
-    return minusSum.toFixed(2);
+    return formatResult(minusSum);
 }
 
 function multiply(a, b) {
     let multiplySum = a * b;
-    return multiplySum.toFixed(2);
+    return formatResult(multiplySum);
 }
 
 function divide(a, b) {
@@ -153,8 +152,18 @@ function divide(a, b) {
         return 'Cannot divide by zero';
     }
     let divideSum = a / b;
-    return divideSum.toFixed(2);
+    return formatResult(divideSum);
 }
+
+function formatResult(result) {
+    // Check if the result is an integer (no decimal part)
+    if (Number.isInteger(result)) {
+        return result;
+    } else {
+        return result.toFixed(2); // Return with two decimal places
+    }
+}
+
 
 function operate(firstNumber, secondNumber, operator) {
     switch (operator) {
